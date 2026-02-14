@@ -1,171 +1,173 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para Sofi ❤️</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>❤️</title>
 
-        body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            color: #111;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #FFDAE9;
-            overflow: auto;
-            padding: 24px;
-        }
+<style>
+body{
+    margin:0;
+    font-family:system-ui;
+    background:#FFDAE9;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
 
-        /* Envelope stage: no modal, just envelope on pink background */
-        #envelopeStage {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            position: fixed;
-            inset: 0;
-            z-index: 10;
-        }
+/* ===== ENVELOPE ===== */
+#envelopeStage{
+    position:fixed;
+    inset:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
 
-        body.show-modal .container {
-            display: flex;
-        }
+.envelope{
+    width:250px;
+    height:180px;
+    background:#f5e6d3;
+    border-radius:6px;
+    position:relative;
+    cursor:pointer;
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
+}
 
-        .container {
-            display: none;
-            flex-direction: column;
-            text-align: center;
-            background: white;
-            padding: 40px 36px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            width: fit-content;
-            max-width: min(650px, calc(100vw - 48px));
-            min-width: 0;
-            min-height: 520px;
-            max-height: calc(100vh - 48px);
-            overflow-y: auto;
-            position: relative;
-            transform-origin: center center;
-            transition: opacity 0.25s ease, transform 0.3s ease;
-        }
+.envelope-flap{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:#e8d5c4;
+    clip-path:polygon(0 0,50% 50%,100% 0);
+    transition:.8s;
+    transform-origin:top;
+}
 
-        .modal-inner {
-            flex: 1 1 auto;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 0;
-            width: fit-content;
-            max-width: 100%;
-        }
+.envelope.opening .envelope-flap{
+    transform:rotateX(-170deg);
+}
 
-        .modal-view {
-            width: fit-content;
-            max-width: 100%;
-            opacity: 0;
-            transition: opacity 0.25s ease;
-            display: none;
-        }
+/* ===== MODAL ===== */
+.container{
+    display:none;
+    background:white;
+    padding:40px;
+    border-radius:16px;
+    box-shadow:0 10px 30px rgba(0,0,0,.2);
+    text-align:center;
+}
 
-        .modal-view.visible {
-            display: block;
-            opacity: 1;
-        }
+body.show-modal .container{
+    display:block;
+}
 
-        .envelope {
-            position: relative;
-            width: 220px;
-            height: 160px;
-            background: #f5e6d3;
-            border: 1px solid #d4c4a8;
-            border-radius: 4px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-            cursor: pointer;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-        }
+.puzzle-grid{
+    display:grid;
+    grid-template-columns:repeat(3,100px);
+    grid-template-rows:repeat(3,100px);
+    gap:2px;
+    margin:auto;
+}
 
-        .envelope:hover:not(.opening) {
-            transform: scale(1.05);
-            box-shadow: 0 8px 28px rgba(0,0,0,0.15);
-        }
+.puzzle-tile{
+    background-size:cover;
+    cursor:pointer;
+}
 
-        .envelope-flap {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(165deg, #e8d5c4 0%, #d4c4a8 45%, #c9b89a 100%);
-            clip-path: polygon(0 0, 50% 50%, 100% 0);
-            transform-origin: top center;
-            transition: transform 0.8s cubic-bezier(0.34, 1.2, 0.64, 1);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+.empty{
+    background:none;
+}
 
-        .envelope-flap-outline {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
+button{
+    margin-top:20px;
+    padding:10px 20px;
+    border:none;
+    border-radius:30px;
+    background:#FFDAE9;
+    font-weight:bold;
+    cursor:pointer;
+}
+</style>
+</head>
 
-        .envelope-flap-outline line {
-            vector-effect: non-scaling-stroke;
-        }
+<body>
 
-        .envelope.opening .envelope-flap {
-            transform: rotateX(-170deg);
-        }
+<div id="envelopeStage">
+    <div class="envelope" id="envelope">
+        <div class="envelope-flap"></div>
+    </div>
+</div>
 
-        .envelope-heart {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 40px;
-            height: 40px;
-            color: #c41e3a;
-            pointer-events: none;
-            z-index: 1;
-            transition: opacity 0.35s ease;
-        }
+<div class="container">
+    <h2>Dear Gaby...</h2>
+    <div class="puzzle-grid" id="puzzleGrid"></div>
+    <p id="finalText" style="display:none;">...you complete me 💘<br>Will you be my Valentine?</p>
+    <button id="yesBtn" style="display:none;">Yes</button>
+</div>
 
-        .envelope-heart.hidden {
-            opacity: 0;
-        }
+<script>
+const envelope=document.getElementById("envelope");
+const envelopeStage=document.getElementById("envelopeStage");
+const puzzleGrid=document.getElementById("puzzleGrid");
+const finalText=document.getElementById("finalText");
+const yesBtn=document.getElementById("yesBtn");
 
-        .envelope-heart svg {
-            width: 100%;
-            height: 100%;
-        }
+envelope.addEventListener("click",()=>{
+    envelope.classList.add("opening");
+    setTimeout(()=>{
+        envelopeStage.style.display="none";
+        document.body.classList.add("show-modal");
+    },800);
+});
 
-        @media (min-width: 768px) {
-            .envelope {
-                width: 300px;
-                height: 218px;
-            }
-            .envelope-heart {
-                width: 52px;
-                height: 52px;
-            }
-        }
+const EMPTY=9;
+let state=[1,2,3,4,5,6,7,8,9];
 
-        @media (min-width: 1024px) {
-            .envelope {
-                width: 340px;
-                height: 247px;
-            }
-            .envelope-heart {
-                width:
+function shuffle(){
+    state.sort(()=>Math.random()-0.5);
+}
+
+function render(){
+    puzzleGrid.innerHTML="";
+    state.forEach((num,i)=>{
+        const tile=document.createElement("div");
+        tile.className="puzzle-tile";
+        if(num===EMPTY){
+            tile.classList.add("empty");
+        }else{
+            tile.style.backgroundImage=`url('./images/tile-${num}.png')`;
+            tile.onclick=()=>move(i);
+        }
+        puzzleGrid.appendChild(tile);
+    });
+}
+
+function move(i){
+    const emptyIndex=state.indexOf(EMPTY);
+    const valid=[emptyIndex-1,emptyIndex+1,emptyIndex-3,emptyIndex+3];
+    if(valid.includes(i)){
+        [state[i],state[emptyIndex]]=[state[emptyIndex],state[i]];
+        render();
+        checkWin();
+    }
+}
+
+function checkWin(){
+    if(state.join()==="1,2,3,4,5,6,7,8,9"){
+        finalText.style.display="block";
+        yesBtn.style.display="inline-block";
+    }
+}
+
+shuffle();
+render();
+
+yesBtn.onclick=()=>{
+    window.location.href="./giphy.gif";
+};
+</script>
+
+</body>
+</html>
